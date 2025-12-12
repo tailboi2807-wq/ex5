@@ -1,6 +1,6 @@
 # Ex.05 Design a Website for Server Side Processing
 ## Date:12/12/2025
-ref no : 25003626
+## Ref no : 25003626
 
 ## AIM:
  To design a website to calculate the power of a lamp filament in an incandescent bulb in the server side. 
@@ -35,96 +35,119 @@ Publish the website in the given URL.
 ## PROGRAM :
 ~~~
 math.html
+
 <!DOCTYPE html>
 <html>
 <head>
+<title>Power of a Lamp</title>
 <style>
-.formelt {
-    font-size: 20px;
-    background-color: rgb(25, 104, 156);
-}
-
-.formelt {
-    color: rgb(209, 58, 239);
-    text-align: center;
-    margin-top: 7px;
-    margin-bottom: 6px;
-}
-
-h1 {
-    color: rgb(28, 168, 178);
-    text-align: center;
-    padding-top: 20px;
-}
+    body {
+        background-color: powderblue;
+        font-family: Arial;
+    }
+    .box {
+        width: 380px;
+        background-color: plum;
+        color: black;
+        padding: 20px;
+        margin: auto;
+        margin-top: 120px;
+        border: 5px dotted black;
+        text-align: left;
+    }
+    input {
+        width: 150px;
+        padding: 5px;
+    }
+    button {
+        margin-top: 10px;
+        padding: 5px 15px;
+    }
 </style>
 </head>
-
 <body>
-<div class="edge">
+
 <div class="box">
-<h1>Area of a Rectangle</h1>
+    <h2 style="text-align:center;">Power of a Lamp</h2>
 
-<form method="POST">
-{% csrf_token %}
+    Current : 
+    <input type="text" id="i"> (in A)
+    <br><br>
 
-<div class="formelt">
-    Length : <input type="text" name="length" value="{{l}}"> (in m)<br/>
+    Resistance : 
+    <input type="text" id="r"> (in Ω)
+    <br><br>
+
+    <button onclick="calc()">Calculate</button>
+    <br><br>
+
+    Power : 
+    <input type="text" id="p" readonly> W
 </div>
 
-<div class="formelt">
-    Breadth : <input type="text" name="breadth" value="{{b}}"> (in m)<br/>
-</div>
+<script>
+function calc() {
+    let I = parseFloat(document.getElementById("i").value);
+    let R = parseFloat(document.getElementById("r").value);
+    
+    if (!isNaN(I) && !isNaN(R)) {
+        document.getElementById("p").value = (I * I * R).toFixed(0);
+    } else {
+        document.getElementById("p").value = "Error";
+    }
+}
+</script>
 
-<div class="formelt">
-    <input type="submit" value="Calculate"><br/>
-</div>
-
-<div class="formelt">
-    Area : <input type="text" name="area" value="{{area}}"> m<sup>2</sup><br/>
-</div>
-
-</form>
-</div>
-</div>
 </body>
 </html>
+
 
 views.py
 
 from django.shortcuts import render
 
-def rectarea(request):
+def lamp_power(request):
+    print("Request :", request)
     context = {}
-    context['area'] = "0"
-    context['l'] = "0"
-    context['b'] = "0"
+    context['power'] = "0"
+    context['I'] = "0"
+    context['R'] = "0"
 
     if request.method == "POST":
         print("POST method is used")
-        l = request.POST.get('length', '0')
-        b = request.POST.get('breadth', '0')
-        print("request:", request)
-        print("Length:", l)
-        print("Breadth:", b)
 
-        area = int(l) * int(b)
-        context['area'] = area
-        context['l'] = l
-        context['b'] = b
-        print("Area:", area)
+        I = request.POST.get('current', '0')
+        R = request.POST.get('resistance', '0')
+
+        print("Current :", I)
+        print("Resistance :", R)
+
+        try:
+            power = (float(I) * float(I)) * float(R)
+        except:
+            power = "Invalid"
+
+        context['power'] = power
+        context['I'] = I
+        context['R'] = R
+
+        print("Power :", power)
 
     return render(request, 'mathapp/math.html', context)
-    
-    urls.py
-    
+
+
+urls.py
+
 from django.contrib import admin
 from django.urls import path
-from mathapp import views
+from mathapp import views   
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('areaofrectangle/', views.rectarea, name="areaofrectangle"),
-    path('', views.rectarea, name="areaofrectangleroot")
+
+    path('lamp-power/', views.lamp_power, name='lamp_power'),
+
+    path('', views.lamp_power, name='lamp_power_root'),
 ]
 ~~~
 
@@ -132,7 +155,7 @@ urlpatterns = [
 ![alt text](<Screenshot 2025-12-12 102832.png>)
 
 ## HOMEPAGE:
-![alt text](<Screenshot 2025-12-12 103054.png>)
+![alt text](<Screenshot 2025-12-12 124607.png>)
 
 ## RESULT:
 The program for performing server side processing is completed successfully.

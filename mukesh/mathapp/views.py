@@ -1,24 +1,30 @@
-
 from django.shortcuts import render
 
-def rectarea(request):
+def lamp_power(request):
+    print("Request :", request)
     context = {}
-    context['area'] = "0"
-    context['l'] = "0"
-    context['b'] = "0"
+    context['power'] = "0"
+    context['I'] = "0"
+    context['R'] = "0"
 
     if request.method == "POST":
         print("POST method is used")
-        l = request.POST.get('length', '0')
-        b = request.POST.get('breadth', '0')
-        print("request:", request)
-        print("Length:", l)
-        print("Breadth:", b)
 
-        area = int(l) * int(b)
-        context['area'] = area
-        context['l'] = l
-        context['b'] = b
-        print("Area:", area)
+        I = request.POST.get('current', '0')
+        R = request.POST.get('resistance', '0')
+
+        print("Current :", I)
+        print("Resistance :", R)
+
+        try:
+            power = (float(I) * float(I)) * float(R)
+        except:
+            power = "Invalid"
+
+        context['power'] = power
+        context['I'] = I
+        context['R'] = R
+
+        print("Power :", power)
 
     return render(request, 'mathapp/math.html', context)
